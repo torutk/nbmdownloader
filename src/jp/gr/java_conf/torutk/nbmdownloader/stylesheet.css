@@ -1,0 +1,18 @@
+/* 
+    Document   : stylesheet
+    Created on : 2013/01/06, 18:34:48
+    Author     : Toru Takahashi <torutk@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.text-field-normal {
+    -fx-background-color: white;
+}
+.text-field-error {
+    -fx-background-color: red;
+}
