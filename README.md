@@ -45,4 +45,6 @@ BSD 2-Clause License
 Screenshots
 -----------
 
-![Inital Window](nbmdownloader/master/screenshot-1.png)
+![Inital Window](https://raw.github.com/torutk/nbmdownloader/master/screenshot-1.png)
+
+
