@@ -28,6 +28,7 @@ package jp.gr.java_conf.torutk.nbmdownloader;
 import java.net.URL;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * ダウンロードするモジュールと状況を表現するJavaFXビューモデル。
@@ -67,6 +68,10 @@ public class Module {
         return status.get();
     }
 
+    public StringProperty statusProperty() {
+        return status;
+    }
+    
     public void setStatus(String status) {
         this.status.set(status);
     }

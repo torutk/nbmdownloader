@@ -33,6 +33,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -53,7 +55,7 @@ import javafx.stage.DirectoryChooser;
  * @author toru
  */
 public class NbmDownloaderController implements Initializable {
-    
+    private static final Logger logger = Logger.getLogger(NbmDownloaderController.class.getName());
     @FXML
     private TextField urlField;
     @FXML
@@ -110,7 +112,7 @@ public class NbmDownloaderController implements Initializable {
         List<Module> modules = new ArrayList<>();
         List<String> moduleNames = updateCenter.getModules();
         for (int i = 0; i < moduleNames.size(); i++) {
-            modules.add(new Module(i + 1, moduleNames.get(i), "yet", updateCenter.getUrl(moduleNames.get(i))));
+            modules.add(new Module(i + 1, moduleNames.get(i), "not yet", updateCenter.getUrl(moduleNames.get(i))));
         }
         return modules;
     }
@@ -128,6 +130,12 @@ public class NbmDownloaderController implements Initializable {
                 }
                 return null;
             }
+
+            @Override
+            protected void succeeded() {
+                logger.log(Level.INFO, "Download completed.");
+            }
+            
         };
         Thread thr = new Thread(task);
         thr.setDaemon(true);
@@ -138,7 +146,15 @@ public class NbmDownloaderController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                module.setStatus(status);
+                String name = module.getName();
+                for (Module m : table.getItems()) {
+                    if (name.equals(m.getName())) {
+                        logger.log(Level.FINER, "{0}''s status is changed to: {1}", new Object[]{name, status});
+                        m.setStatus(status);
+                        return;
+                    }
+                }
+                logger.log(Level.WARNING, "module:{0} is not in a table", module.getName());
             }
         });
     }
@@ -161,9 +177,9 @@ public class NbmDownloaderController implements Initializable {
         
         // test data
         ObservableList<Module> list = table.getItems();
-        list.add(new Module(1, "com-android-ide_common.nmb", "done", null));
-        list.add(new Module(2, "com-android-layoutlib_api.nbm", "downloading", null));
-        list.add(new Module(3, "net-sf-kxml-kxml2.nbm", "waiting", null));
+        list.add(new Module(1, "dummy-core.nmb", "done", null));
+        list.add(new Module(2, "dummy-support-extensions.nbm", "doing", null));
+        list.add(new Module(3, "dummy-support-xml-parsing2.nbm", "not yet", null));
         
     }    
 }
