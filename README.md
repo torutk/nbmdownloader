@@ -45,4 +45,4 @@ BSD 2-Clause License
 Screenshots
 -----------
 
-![Inital Window](screenshot-1.png)
+![Inital Window](nmbdownloader/screenshot-1.png)
