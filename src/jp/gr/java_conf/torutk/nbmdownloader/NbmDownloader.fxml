@@ -24,11 +24,11 @@
         <TableColumn prefWidth="75.0" text="Status" fx:id="statusColumn" />
       </columns>
     </TableView>
-    <Button layoutY="35.0" mnemonicParsing="false" onAction="#handleStartButtonAction" text="Start" AnchorPane.rightAnchor="9.0" />
+    <Button fx:id="startButton" layoutY="35.0" mnemonicParsing="false" onAction="#handleStartButtonAction" text="Start" AnchorPane.rightAnchor="9.0" />
     <Label layoutX="14.0" layoutY="67.0" text="Directory:" />
     <TextField fx:id="directoryField" layoutY="64.0" prefWidth="254.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="47.0" />
     <Button layoutY="65.0" mnemonicParsing="false" onAction="#handleDirectoryButtonAction" text="..." AnchorPane.rightAnchor="9.0" />
     <HBox fx:id="hBox" layoutX="0.0" layoutY="320.0" prefHeight="16.0" prefWidth="483.0" />
-    <Label prefWidth="49.00000011920929" text="Rev:-" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+    <Label prefWidth="49.00000011920929" text="Rev:1" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
   </children>
 </AnchorPane>

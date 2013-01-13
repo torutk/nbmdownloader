@@ -41,6 +41,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -58,6 +59,8 @@ public class NbmDownloaderController implements Initializable {
     private static final Logger logger = Logger.getLogger(NbmDownloaderController.class.getName());
     @FXML
     private TextField urlField;
+    @FXML
+    private Button startButton;
     @FXML
     private TextField directoryField;
     @FXML
@@ -77,8 +80,10 @@ public class NbmDownloaderController implements Initializable {
     
     @FXML
     private void handleStartButtonAction(ActionEvent event) {
-        
+        startButton.setDisable(true);
+        progressBar.setDisable(false);
         urlField.getStyleClass().removeAll("text-field", "text-field-error");
+
         String text = urlField.getText();
         try {
             final URL url = new URL(text);
@@ -103,16 +108,17 @@ public class NbmDownloaderController implements Initializable {
             thr.start();
         } catch (MalformedURLException ex) {
             urlField.getStyleClass().add("text-field-error");
-            // TODO 
+            startButton.setDisable(false);
+            progressBar.setDisable(true);
             System.out.println(ex.getLocalizedMessage());
         }
     }
 
     private List<Module> createModules(UpdateCenter updateCenter) {
         List<Module> modules = new ArrayList<>();
-        List<String> moduleNames = updateCenter.getModules();
-        for (int i = 0; i < moduleNames.size(); i++) {
-            modules.add(new Module(i + 1, moduleNames.get(i), "not yet", updateCenter.getUrl(moduleNames.get(i))));
+        List<URL> moduleUrls = updateCenter.getModuleUrls();
+        for (int i = 0; i < moduleUrls.size(); i++) {
+            modules.add(new Module(i + 1, UpdateCenter.getUrlFileName(moduleUrls.get(i)), "not yet", moduleUrls.get(i)));
         }
         return modules;
     }
@@ -123,7 +129,9 @@ public class NbmDownloaderController implements Initializable {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                int i = 0;
                 for (Module module : modules) {
+                    updateProgress(++i, modules.size());
                     changeStatusOnAnotherThread(module, "doing");
                     UrlDownloader.download(module.getUrl(), path);
                     changeStatusOnAnotherThread(module, "done");
@@ -133,10 +141,13 @@ public class NbmDownloaderController implements Initializable {
 
             @Override
             protected void succeeded() {
+                startButton.setDisable(false);
+                progressBar.setDisable(true);
                 logger.log(Level.INFO, "Download completed.");
             }
             
         };
+        progressBar.progressProperty().bind(task.progressProperty());
         Thread thr = new Thread(task);
         thr.setDaemon(true);
         thr.start();
@@ -174,6 +185,9 @@ public class NbmDownloaderController implements Initializable {
         noColumn.setCellValueFactory(new PropertyValueFactory<Module, Integer>("no"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<Module, String>("name"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<Module, String>("status"));
+        
+        progressBar = new ProgressBar(0);
+        hBox.getChildren().add(progressBar);
         
         // test data
         ObservableList<Module> list = table.getItems();

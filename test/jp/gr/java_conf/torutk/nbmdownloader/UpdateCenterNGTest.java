@@ -65,8 +65,32 @@ public class UpdateCenterNGTest {
     public void testSomeMethod() throws IOException {
         URL url = new URL("http://nbandroid.org/release72/updates/updates.xml");
         UpdateCenter uc = new UpdateCenter(url);
-        List<String> ucModules = uc.getModules();
+        List<URL> ucModules = uc.getModuleUrls();
         System.out.println(Arrays.toString(ucModules.toArray()));
-        System.out.println(uc.getUrlBase());
     }
+    
+    @Test
+    public void testGetUrlBase() throws IOException {
+        URL url = new URL("http://nbandroid.org/release72/updates/updates.xml");
+        String expect = "http://nbandroid.org/release72/updates";
+        String actual = UpdateCenter.getUrlBase(url);
+        assertEquals(actual, expect);
+    }
+    
+    @Test
+    public void testGetUrlFileName() throws IOException {
+        URL url = new URL("http://nbandroid.org/release72/updates/updates.xml");
+        String expect = "updates.xml";
+        String actual = UpdateCenter.getUrlFileName(url);
+        assertEquals(actual, expect);
+    }
+    
+    @Test
+    public void testReplaceFileName() throws IOException {
+        URL fromUrl = new URL("http://nbandroid.org/release72/updates/updates.xml");
+        URL expect = new URL("http://nbandroid.org/release72/updates/abcd.nbm");
+        URL actual = UpdateCenter.replaceFileName(fromUrl, "abcd.nbm");
+        assertEquals(actual, expect);
+    }
+    
 }

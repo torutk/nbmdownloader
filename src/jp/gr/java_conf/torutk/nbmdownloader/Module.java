@@ -26,42 +26,54 @@
 package jp.gr.java_conf.torutk.nbmdownloader;
 
 import java.net.URL;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
  * ダウンロードするモジュールと状況を表現するJavaFXビューモデル。
  * 
+ * <li>1. 連番
+ * <li>2. モジュールファイル名
+ * <li>3. ダウンロード状況
+ * <li>4. モジュールファイルのURL
+ * 
  * @author Toru Takahashi <torutk@gmail.com>
  */
 public class Module {
-    private final SimpleIntegerProperty no;
-    private final SimpleStringProperty name;
+    private int no;
+    private String name;
     private final SimpleStringProperty status;
     private final URL url;
 
+    /**
+     * 連番、ファイル名、ダウンロード状況、ダウンロードURLを指定して生成する。
+     * 
+     * @param no
+     * @param name
+     * @param status
+     * @param url
+     */
     public Module(int no, String name, String status, URL url) {
-        this.no = new SimpleIntegerProperty(no);
-        this.name = new SimpleStringProperty(name);
+        this.no = no;
+        this.name = name;
         this.status = new SimpleStringProperty(status);
         this.url = url;
     }
     
     public int getNo() {
-        return no.get();
+        return no;
     }
     
     public void setNo(int no) {
-        this.no.set(no);
+        this.no = no;
     }
     
     public String getName() {
-        return name.get();
+        return name;
     }
 
     public void setName(String name) {
-        this.name.set(name);
+        this.name = name;
     }
 
     public String getStatus() {

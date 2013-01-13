@@ -36,9 +36,12 @@ Restriction
 Release note
 ------------
 
+- Rev.A
+  - handling URL format distribution attribute in update xml.
+  - add progress bar while downloading
 
-LICENES
--------
+LICENSES
+--------
 
 BSD 2-Clause License
 

@@ -42,11 +42,12 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * NetBeansプラグインのUpdateCenter情報を保持するクラス。
  * 
+ * 
  * @author Toru Takahashi <torutk@gmail.com>
  */
 public class UpdateCenter {
     private URL url;
-    private List<String> modules = new ArrayList<>();
+    private List<URL> moduleUrls = new ArrayList<>();
     
     /**
      * UpdateCenterのURLを指定してインスタンスを生成する。
@@ -67,8 +68,14 @@ public class UpdateCenter {
                     if (!reader.getLocalName().equalsIgnoreCase("module")) {
                         continue;
                     }
-                    String file = reader.getAttributeValue(null, "distribution");
-                    modules.add(file);
+                    String distribution = reader.getAttributeValue(null, "distribution");
+                    URL moduleUrl = null;
+                    if (distribution.contains("/")) {
+                        moduleUrl = new URL(distribution);
+                    } else {
+                        moduleUrl = replaceFileName(url, distribution);
+                    }
+                    moduleUrls.add(moduleUrl);
                 }
             }
         } catch (IOException | XMLStreamException ex) {
@@ -83,24 +90,49 @@ public class UpdateCenter {
             }
         }
     }
+
     
-    public List<String> getModules() {
-        return Collections.unmodifiableList(modules);
+    public List<URL> getModuleUrls() {
+        return Collections.unmodifiableList(moduleUrls);
     }
     
-    public String getUrlBase() {
+    /**
+     * 引数で指定したURLから末尾のファイル名を除いた部分を文字列で返却する。
+     * 
+     * @param url ファイル名までを指定したURL
+     * @return ファイル名を除いたURLの文字列
+     */
+    public static String getUrlBase(URL url) {
         String urlText = url.toExternalForm();
         int index = urlText.lastIndexOf("/");
         assert -1 < index;
         return urlText.substring(0, index);
     }
 
-    public URL getUrl(String moduleName) {
+    /**
+     * 引数で指定したURLから末尾のファイル名を文字列で返却する。
+     * 
+     * @param url ファイル名までを指定したURL
+     * @return ファイル名の文字列
+     */
+    public static String getUrlFileName(URL url) {
+        String urlText = url.toExternalForm();
+        int index = urlText.lastIndexOf("/");
+        return urlText.substring(index + 1, urlText.length());
+    }
+    
+    /**
+     * 引数urlで指定したURLのファイル名を引数moduleNameで置き換えたURLを返却する。
+     * 
+     * @param url ファイル名までを指定したURL
+     * @param moduleName 置き換えるファイル名
+     * @return 置き換えたURL
+     */
+    public static URL replaceFileName(URL url, String moduleName) {
         try {
-            return new URL(getUrlBase() + "/" + moduleName);
+            return new URL(getUrlBase(url) + "/" + moduleName);
         } catch (MalformedURLException ex) {
             throw new AssertionError(ex);
         }
-        
     }
 }
